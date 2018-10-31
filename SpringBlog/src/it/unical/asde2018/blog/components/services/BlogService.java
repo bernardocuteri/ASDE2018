@@ -24,6 +24,7 @@ public class BlogService {
 		Post filippoPost = new Post("I like playing football", filippo, new Date(),
 				"I like to play football with friends");
 		filippoPost.addComment(new Comment(giovanni, new Date(), "Me too!"));
+		filippoPost.addComment(new Comment(filippo, new Date(), "Definitely!"));
 		posts.add(filippoPost);
 	}
 
