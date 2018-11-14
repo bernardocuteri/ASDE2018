@@ -1,9 +1,29 @@
 package it.unical.asde2018.blog.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
 public class Credentials {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+
+	@Column(nullable = false, unique = true)
 	private String username;
+
+	@Column(nullable = false)
 	private String password;
+
+	public Credentials() {
+		super();
+	}
 
 	public Credentials(String username, String password) {
 		super();
@@ -35,8 +55,6 @@ public class Credentials {
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
-	
-	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -59,7 +77,5 @@ public class Credentials {
 			return false;
 		return true;
 	}
-	
-	
 
 }
