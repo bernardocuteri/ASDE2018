@@ -12,6 +12,28 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
+<script>
+	function getEventsFromServer() {
+
+		$.ajax({
+			url : "getEvents",
+			success : function(result) {
+				$("#message").html(result);
+				getEventsFromServer();
+			},
+			error : function() {
+				//call events again after some time
+				setTimeout(function() {
+					getEventsFromServer();
+				}, 5000);
+			}
+		});
+
+	}
+
+	$(document).ready(getEventsFromServer());
+</script>
 <body>
 
 	<div class="container">
@@ -56,6 +78,9 @@
 			</div>
 
 		</c:if>
+
+		<h2>Server async message</h2>
+		<h2 id="message"></h2>
 
 	</div>
 

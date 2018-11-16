@@ -1,5 +1,6 @@
 package it.unical.asde2018.blog.components.controllers;
 
+import java.util.concurrent.ForkJoinPool;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,23 +9,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import it.unical.asde2018.blog.components.services.BlogService;
+import it.unical.asde2018.blog.components.services.EventsService;
 import it.unical.asde2018.blog.components.services.LoginService;
 
 @Controller
 public class IndexController {
-	
 
 	@Autowired
 	private BlogService blogService;
-	
+
 	@Autowired
 	private LoginService loginService;
 
+	@Autowired
+	private EventsService eventsService;
+
 	@GetMapping("/")
 	public String goToIndex(Model model, HttpSession session) {
-		
 
 		if (session.getAttribute("user") != null) {
 
@@ -33,24 +38,40 @@ public class IndexController {
 		}
 		return "login";
 	}
-	
+
 	@GetMapping("/login")
-	public String loginAttempt(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-		
-		if(loginService.login(username, password)) {
+	public String loginAttempt(@RequestParam String username, @RequestParam String password, HttpSession session,
+			Model model) {
+
+		if (loginService.login(username, password)) {
 			session.setAttribute("user", username);
 			return "redirect:/";
 		}
 		model.addAttribute("error", "Wrong credentials!");
 		return "login";
-		
-		
+
 	}
-	
+
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "login";
 	}
-	
+
+	@GetMapping("/getEvents")
+	@ResponseBody
+	public DeferredResult<String> getEvents(HttpSession session) {
+
+		DeferredResult<String> output = new DeferredResult<>();
+		ForkJoinPool.commonPool().submit(() -> {
+			try {
+				output.setResult(eventsService.nextEvent(session.getId()));
+			} catch (InterruptedException e) {
+				output.setResult("An error occurred during event retrieval");
+			}
+		});
+
+		return output;
+	}
+
 }
