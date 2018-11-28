@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Post {
 	@Column(nullable=false)
 	private String title;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	private User poster;
 	
 	@Column
@@ -35,7 +36,7 @@ public class Post {
 	@Column
 	private String corpus;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
 	private List<Comment> comments;
 	
 	
